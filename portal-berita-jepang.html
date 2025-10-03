@@ -1,0 +1,398 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NipponNow — Portal Berita Jepang Terbaru</title>
+  <meta name="description" content="Portal berita Jepang terbaru: politik, ekonomi, teknologi, budaya, olahraga, dan travel. Update cepat, ringkas, dan terpercaya." />
+  <meta name="keywords" content="berita Jepang, news Japan, Tokyo, ekonomi Jepang, teknologi Jepang, budaya Jepang, olahraga Jepang, wisata Jepang" />
+  <meta property="og:title" content="NipponNow — Portal Berita Jepang Terbaru" />
+  <meta property="og:description" content="Ikuti kabar terbaru dari seluruh Jepang: politik, ekonomi, teknologi, budaya, olahraga, dan travel." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="id_ID" />
+  <meta name="theme-color" content="#0ea5e9" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%23ef4444'/></svg>">
+
+  <style>
+    :root{
+      --bg: #0b1220; /* dark base */
+      --surface: #0f172a;
+      --muted: #94a3b8;
+      --text: #e2e8f0;
+      --brand: #0ea5e9;
+      --accent: #ef4444; /* hinomaru */
+      --ring: rgba(14,165,233,.35);
+      --radius: 16px;
+    }
+    *{box-sizing: border-box}
+    html,body{margin:0; height:100%;}
+    body{
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background: radial-gradient(1200px 800px at 80% -10%, rgba(14,165,233,.08), transparent 60%) ,
+                  radial-gradient(900px 600px at 10% 110%, rgba(239,68,68,.08), transparent 60%),
+                  var(--bg);
+      line-height: 1.6;
+    }
+    a{color: inherit; text-decoration: none}
+    .container{max-width:1200px; margin-inline:auto; padding: 20px}
+    header{
+      position:sticky; top:0; z-index:10; backdrop-filter:saturate(150%) blur(8px);
+      background: linear-gradient(180deg, rgba(15,23,42,.85), rgba(15,23,42,.65));
+      border-bottom: 1px solid rgba(148,163,184,.18);
+    }
+    .topbar{display:flex; gap:16px; align-items:center; justify-content:space-between; padding: 14px 20px}
+    .brand{display:flex; align-items:center; gap:12px}
+    .logo{inline-size:32px; block-size:32px; border-radius:50%; background: radial-gradient(circle at 55% 45%, var(--accent), #dc2626 60%); box-shadow:0 0 0 3px rgba(239,68,68,.2)}
+    .title{font-weight:800; letter-spacing:.2px}
+    .subtitle{font-size:12px; color:var(--muted)}
+    .actions{display:flex; gap:10px; align-items:center}
+    .search{position:relative}
+    .search input{width:280px; background:#0b1220; border:1px solid rgba(148,163,184,.25); padding:10px 12px 10px 36px; border-radius:999px; color:var(--text); outline:none}
+    .search svg{position:absolute; inset-block-start:50%; inset-inline-start:10px; transform:translateY(-50%); opacity:.7}
+    .btn{padding:10px 14px; border-radius:999px; border:1px solid rgba(148,163,184,.25); background:#0b1220; color:var(--text)}
+    .btn:hover{border-color:var(--brand); box-shadow:0 0 0 3px var(--ring)}
+
+    nav{display:flex; gap:10px; overflow:auto; padding: 0 20px 14px}
+    .chip{padding:8px 12px; border:1px solid rgba(148,163,184,.25); border-radius:999px; font-size:14px; color:var(--muted); white-space:nowrap; cursor:pointer}
+    .chip.active{border-color:var(--brand); color:#e0f2fe; background:rgba(14,165,233,.1)}
+
+    .ticker{
+      margin: 12px 20px; border:1px dashed rgba(148,163,184,.25); border-radius: var(--radius);
+      display:flex; align-items:center; gap:12px; padding:10px 12px; background: rgba(14,165,233,.06)
+    }
+    .ticker .dot{inline-size:10px; block-size:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 3px rgba(239,68,68,.25)}
+    .ticker .marquee{overflow:hidden; white-space:nowrap; mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent)}
+    .ticker .marquee span{display:inline-block; padding-inline:22px; animation: slide 20s linear infinite}
+    @keyframes slide{from{transform: translateX(0)} to{transform: translateX(-50%)}}
+
+    .grid{display:grid; grid-template-columns: 2fr 1fr; gap:18px; align-items:start}
+    .cards{display:grid; grid-template-columns: repeat(3, 1fr); gap:16px}
+    .card{
+      background: linear-gradient(180deg, rgba(148,163,184,.06), rgba(148,163,184,.03));
+      border:1px solid rgba(148,163,184,.18);
+      border-radius: var(--radius);
+      overflow:hidden;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .card:hover{transform: translateY(-2px); box-shadow: 0 10px 30px rgba(2,6,23,.4)}
+    .thumb{aspect-ratio: 16/9; background: #0b1220; display:block}
+    .thumb img{width:100%; height:100%; object-fit:cover}
+    .meta{display:flex; gap:10px; flex-wrap:wrap; align-items:center; font-size:12px; color:var(--muted)}
+    .card .body{padding:14px}
+    .tag{padding:4px 8px; border-radius:999px; background: rgba(14,165,233,.12); border:1px solid rgba(14,165,233,.25); color:#bae6fd; font-weight:600}
+    .card h3{margin:8px 0 8px; font-size:16px}
+    .card p{margin:0 0 10px; color:#cbd5e1}
+    .readmore{font-weight:700; color:#93c5fd}
+
+    .sidebar{display:grid; gap:16px}
+    .widget{background: linear-gradient(180deg, rgba(148,163,184,.06), rgba(148,163,184,.03)); border:1px solid rgba(148,163,184,.18); border-radius: var(--radius); padding:14px}
+    .widget h4{margin:0 0 10px}
+    .mini-list{display:grid; gap:10px}
+    .mini-item{display:grid; grid-template-columns: 88px 1fr; gap:10px; align-items:center}
+    .mini-item img{width:100%; height:60px; object-fit:cover; border-radius:10px}
+    .mini-item a{font-size:14px}
+
+    footer{margin-top: 30px; padding: 24px 20px; color: var(--muted); border-top:1px solid rgba(148,163,184,.18)}
+    .footer-grid{display:grid; grid-template-columns: 1fr 1fr; gap:16px}
+
+    .badge{font-size:12px; padding:2px 8px; border-radius:999px; border:1px solid rgba(148,163,184,.25); color:var(--muted)}
+    .hidden{display:none !important}
+
+    @media (max-width: 1024px){
+      .cards{grid-template-columns: repeat(2, 1fr)}
+      .grid{grid-template-columns: 1fr}
+    }
+    @media (max-width: 640px){
+      .actions{gap:6px}
+      .search input{width:200px}
+      .cards{grid-template-columns: 1fr}
+      .footer-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="topbar container">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <div class="title">NipponNow</div>
+          <div class="subtitle">Portal Berita Jepang Terbaru</div>
+        </div>
+      </div>
+      <div class="actions">
+        <div class="search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <input id="search" type="search" placeholder="Cari kabar: yen, Tokyo, teknologi..." aria-label="Cari berita" />
+        </div>
+        <button id="toggleTheme" class="btn" aria-pressed="true">Mode Gelap</button>
+        <span id="clock" class="badge" title="Waktu Asia/Phnom_Penh">—</span>
+      </div>
+    </div>
+    <nav>
+      <button class="chip active" data-cat="semua">Semua</button>
+      <button class="chip" data-cat="politik">Politik</button>
+      <button class="chip" data-cat="ekonomi">Ekonomi</button>
+      <button class="chip" data-cat="teknologi">Teknologi</button>
+      <button class="chip" data-cat="budaya">Budaya</button>
+      <button class="chip" data-cat="olahraga">Olahraga</button>
+      <button class="chip" data-cat="travel">Travel</button>
+    </nav>
+    <div class="ticker">
+      <div class="dot" aria-hidden="true"></div>
+      <strong>Breaking:</strong>
+      <div class="marquee" aria-live="polite">
+        <span id="breakingText">Contoh breaking news — edit di bagian <em>DATA.BREAKING</em> pada kode di bawah • Kurs JPY & kebijakan Bank of Japan jadi sorotan • Event budaya & festival musim gugur di berbagai prefektur</span>
+        <span aria-hidden="true">Contoh breaking news — edit di bagian DATA.BREAKING pada kode di bawah • Kurs JPY & kebijakan Bank of Japan jadi sorotan • Event budaya & festival musim gugur di berbagai prefektur</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="grid">
+      <section>
+        <div id="cards" class="cards" aria-live="polite"></div>
+      </section>
+      <aside class="sidebar" aria-label="Sisi Kanan">
+        <div class="widget">
+          <h4>Topik Hangat</h4>
+          <div id="hotTopics" class="mini-list"></div>
+        </div>
+        <div class="widget">
+          <h4>Kalender & Festival</h4>
+          <ul id="events" style="margin:0; padding-left:18px; color:#cbd5e1">
+            <li>Contoh: Momiji Season — Oktober–November</li>
+            <li>Contoh: Sapporo Snow Festival — Februari</li>
+            <li>Contoh: Gion Matsuri — Juli</li>
+          </ul>
+        </div>
+        <div class="widget">
+          <h4>Panduan Cepat</h4>
+          <div style="color:#cbd5e1; font-size:14px">
+            • Gunakan kolom pencarian untuk memfilter judul/teks.<br/>
+            • Klik kategori untuk menyaring kartu berita.<br/>
+            • Ubah konten di bagian <strong>const DATA</strong> dalam file ini.
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="container">
+    <div class="footer-grid">
+      <div>
+        <strong>NipponNow</strong><br/>
+        <span style="color:var(--muted)">© <span id="year"></span> — Portal kurasi berita seputar Jepang. Konten contoh; silakan ganti dengan sumber tepercaya Anda.</span>
+      </div>
+      <div style="text-align:right">
+        <a class="badge" href="#" id="backTop">Kembali ke Atas ↑</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ====== DATA DUMMY (GANTI DENGAN KONTEN TERKINI) ======
+    // Tanggal hari ini (Asia/Phnom_Penh) untuk penanda "Terbaru".
+    const TODAY = new Date();
+
+    const DATA = {
+      BREAKING: "Bank of Japan, yen, dan ekspor menjadi sorotan pasar — ganti teks ini dengan highlight terkini",
+      HOT_TOPICS: [
+        { title: "Kebijakan moneter & yen", img: "https://images.unsplash.com/photo-1518544801976-3e188f2adf29?q=80&w=400&auto=format&fit=crop", url: "#" },
+        { title: "Teknologi robotik & AI Jepang", img: "https://images.unsplash.com/photo-1581092919555-1be9a78a6f54?q=80&w=400&auto=format&fit=crop", url: "#" },
+        { title: "Budaya pop & anime", img: "https://images.unsplash.com/photo-1490818387583-1baba5e638af?q=80&w=400&auto=format&fit=crop", url: "#" }
+      ],
+      ARTICLES: [
+        {
+          id: 1,
+          title: "[Contoh] Tokyo umumkan inisiatif hijau untuk transportasi kota",
+          excerpt: "Program percontohan bus listrik dan jalur sepeda baru ditargetkan menurunkan emisi dalam 12 bulan.",
+          img: "https://images.unsplash.com/photo-1503891450247-ee5f8ec46dc3?q=80&w=1200&auto=format&fit=crop",
+          url: "#",
+          category: "teknologi",
+          source: "Pemprov Tokyo",
+          time: TODAY.toISOString(),
+        },
+        {
+          id: 2,
+          title: "[Contoh] BoJ meninjau arah suku bunga; pelaku pasar memantau pergerakan yen",
+          excerpt: "Pasar menunggu sinyal berikutnya terkait inflasi, upah, dan ekspor manufaktur.",
+          img: "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?q=80&w=1200&auto=format&fit=crop",
+          url: "#",
+          category: "ekonomi",
+          source: "Market Desk",
+          time: TODAY.toISOString(),
+        },
+        {
+          id: 3,
+          title: "[Contoh] Studio anime umumkan seri baru bertema sejarah samurai",
+          excerpt: "Teaser visual memicu antusiasme penggemar; perilisan perdana diproyeksikan musim semi mendatang.",
+          img: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1200&auto=format&fit=crop",
+          url: "#",
+          category: "budaya",
+          source: "Hiburan",
+          time: TODAY.toISOString(),
+        },
+        {
+          id: 4,
+          title: "[Contoh] Maskapai tambah rute ke Hokkaido jelang musim dingin",
+          excerpt: "Penerbangan ekstra mendukung pariwisata ski dan festival salju di utara Jepang.",
+          img: "https://images.unsplash.com/photo-1492538368677-f6e0afe31dcc?q=80&w=1200&auto=format&fit=crop",
+          url: "#",
+          category: "travel",
+          source: "Pariwisata",
+          time: TODAY.toISOString(),
+        },
+        {
+          id: 5,
+          title: "[Contoh] Tim nasional bisbol Jepang jadwalkan laga uji coba internasional",
+          excerpt: "Pelatih menekankan regenerasi skuad menghadapi turnamen besar tahun depan.",
+          img: "https://images.unsplash.com/photo-1517649763962-0c623066013b?q=80&w=1200&auto=format&fit=crop",
+          url: "#",
+          category: "olahraga",
+          source: "Olahraga",
+          time: TODAY.toISOString(),
+        },
+        {
+          id: 6,
+          title: "[Contoh] RUU keamanan siber sektor publik masuk tahap konsultasi",
+          excerpt: "Penguatan standar & audit diharapkan meminimalkan risiko pada layanan kritikal.",
+          img: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1200&auto=format&fit=crop",
+          url: "#",
+          category: "politik",
+          source: "Kebijakan",
+          time: TODAY.toISOString(),
+        }
+      ]
+    };
+
+    // ====== RENDERING ======
+    const elCards = document.getElementById('cards');
+    const elTopics = document.getElementById('hotTopics');
+    const elBreaking = document.getElementById('breakingText');
+    const elYear = document.getElementById('year');
+    elYear.textContent = new Date().getFullYear();
+    elBreaking.textContent = DATA.BREAKING;
+
+    function timeAgo(iso){
+      const d = new Date(iso);
+      const diff = (Date.now() - d.getTime())/1000; // seconds
+      if (diff < 60) return `baru saja`;
+      if (diff < 3600) return `${Math.floor(diff/60)} mnt lalu`;
+      if (diff < 86400) return `${Math.floor(diff/3600)} jam lalu`;
+      const days = Math.floor(diff/86400);
+      return `${days} hari lalu`;
+    }
+
+    function cardTpl(a){
+      return `
+        <article class="card" data-cat="${a.category}">
+          <a class="thumb" href="${a.url}" target="_blank" rel="noopener">
+            <img src="${a.img}" alt="${a.title}" loading="lazy"/>
+          </a>
+          <div class="body">
+            <div class="meta">
+              <span class="tag">${a.category}</span>
+              <span>•</span>
+              <span>${a.source}</span>
+              <span>•</span>
+              <time datetime="${a.time}">${timeAgo(a.time)}</time>
+            </div>
+            <h3><a href="${a.url}" target="_blank" rel="noopener">${a.title}</a></h3>
+            <p>${a.excerpt}</p>
+            <a class="readmore" href="${a.url}" target="_blank" rel="noopener">Baca selengkapnya →</a>
+          </div>
+        </article>`;
+    }
+
+    function topicTpl(t){
+      return `
+        <div class="mini-item">
+          <img src="${t.img}" alt="${t.title}" loading="lazy"/>
+          <a href="${t.url}" target="_blank" rel="noopener">${t.title}</a>
+        </div>`
+    }
+
+    function render(list){
+      elCards.innerHTML = list.map(cardTpl).join('');
+    }
+
+    render(DATA.ARTICLES);
+    elTopics.innerHTML = DATA.HOT_TOPICS.map(topicTpl).join('');
+
+    // ====== INTERAKSI: Pencarian & Kategori ======
+    const q = document.getElementById('search');
+    q.addEventListener('input', () => {
+      const term = q.value.toLowerCase();
+      const cards = [...document.querySelectorAll('#cards .card')];
+      cards.forEach(c => {
+        const text = c.textContent.toLowerCase();
+        c.classList.toggle('hidden', !text.includes(term));
+      });
+    });
+
+    const chips = [...document.querySelectorAll('.chip')];
+    chips.forEach(ch => ch.addEventListener('click', () => {
+      chips.forEach(c => c.classList.remove('active'));
+      ch.classList.add('active');
+      const cat = ch.dataset.cat;
+      const cards = [...document.querySelectorAll('#cards .card')];
+      cards.forEach(c => {
+        const ok = (cat === 'semua') || (c.getAttribute('data-cat') === cat);
+        c.classList.toggle('hidden', !ok);
+      });
+    }));
+
+    // ====== MODE GELAP / TERANG ======
+    const btnTheme = document.getElementById('toggleTheme');
+    let dark = true;
+    btnTheme.addEventListener('click', ()=>{
+      dark = !dark;
+      document.documentElement.style.setProperty('--bg', dark? '#0b1220' : '#f8fafc');
+      document.documentElement.style.setProperty('--surface', dark? '#0f172a' : '#ffffff');
+      document.documentElement.style.setProperty('--text', dark? '#0f172a' : '#0f172a');
+      document.body.style.color = dark? 'var(--text)' : '#0f172a';
+      btnTheme.textContent = dark? 'Mode Gelap' : 'Mode Terang';
+    });
+
+    // ====== JAM (Asia/Phnom_Penh) ======
+    const clock = document.getElementById('clock');
+    function tick(){
+      const fmt = new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Phnom_Penh', hour: '2-digit', minute: '2-digit', second: '2-digit'});
+      clock.textContent = fmt.format(new Date());
+    }
+    setInterval(tick, 1000); tick();
+
+    // ====== BACK TO TOP ======
+    document.getElementById('backTop').addEventListener('click', (e)=>{ e.preventDefault(); window.scrollTo({top:0, behavior:'smooth'}); });
+
+    // ====== PETUNJUK CEPAT INTEGRASI FEED ======
+    /*
+    Untuk menjadikan portal ini otomatis menarik berita terbaru, Anda bisa:
+    1) Menggunakan layanan backend kecil (Cloudflare Worker, Netlify Function, dsb.) untuk mengambil RSS dari media Jepang
+       (NHK, The Japan Times, Nikkei Asia, Asahi, Mainichi) lalu mengubahnya ke JSON dan dipanggil dari sini via fetch().
+    2) Atau tempel manual data berita ke array DATA.ARTICLES di atas.
+    3) Pastikan setiap item memiliki: title, excerpt, img, url, category, source, time.
+    */
+  </script>
+
+  <!-- Structured Data (contoh organisasi media) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "NewsMediaOrganization",
+    "name": "NipponNow",
+    "url": "https://contoh-domain-anda.tld",
+    "logo": "https://contoh-domain-anda.tld/logo.svg",
+    "foundingDate": "2025-09-28",
+    "areaServed": "JP",
+    "sameAs": [
+      "https://twitter.com/",
+      "https://www.facebook.com/"
+    ]
+  }
+  </script>
+</body>
+</html>
